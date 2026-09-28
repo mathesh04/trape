@@ -23,9 +23,8 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="brand">
-          TRAPE
-          <span className="brand-tagline">Fashion for everyone</span>
+        <Link to="/" className="brand" aria-label="TRAPE Home">
+          <img src="/logo.png" alt="TRAPE" className="brand-logo" />
         </Link>
 
         <form className="navbar-search" onSubmit={handleSearch}>

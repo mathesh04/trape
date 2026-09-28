@@ -6,8 +6,10 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-col">
-            <p className="footer-brand">TRAPE</p>
-            <p>Trendy, affordable fashion for women, men &amp; kids — delivered to your doorstep.</p>
+            <Link to="/" aria-label="TRAPE Home">
+              <img src="/logo.png" alt="TRAPE" className="footer-logo" />
+            </Link>
+            <p>Trendy, affordable fashion for everyone — delivered to your doorstep.</p>
           </div>
           <div className="footer-col">
             <h4>Shop</h4>
