@@ -1,12 +1,8 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1'
-// The backend's root origin (without the /api/v1 prefix) — used to resolve
-// image URLs returned by the local-storage upload fallback, which come back
-// as root-relative paths like "/uploads/abc.png" rather than full URLs.
+
 const API_ORIGIN = API_BASE.replace(/\/api\/v1\/?$/, '')
 
-// Turns a possibly-relative media URL (e.g. "/uploads/abc.png") into an
-// absolute one pointing at the backend, while leaving already-absolute URLs
-// (http(s)://..., including third-party/Supabase URLs) untouched.
+
 export function resolveMediaUrl(url) {
   if (!url) return url
   if (/^https?:\/\//i.test(url) || url.startsWith('data:')) return url
@@ -40,8 +36,6 @@ export function storeSession({ accessToken, refreshToken, user }) {
   localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken)
   localStorage.setItem(USER_KEY, JSON.stringify(user))
-  // Once logged in, the guest cart gets merged server-side — drop the guest token
-  // so subsequent requests use the user's own cart.
   localStorage.removeItem(GUEST_TOKEN_KEY)
 }
 
@@ -79,8 +73,7 @@ async function request(path, { method = 'GET', body, auth = true, guestCart = fa
   return json?.data
 }
 
-// Separate helper for multipart/form-data uploads (image files from the
-// admin's own device) — these must NOT set a JSON Content-Type header.
+
 async function uploadRequest(path, formData) {
   const headers = {}
   const token = getAccessToken()
@@ -105,12 +98,12 @@ async function uploadRequest(path, formData) {
 }
 
 export const api = {
-  // Auth
+
   register: (payload) => request('/auth/register', { method: 'POST', body: payload, auth: false }),
   login: (payload) => request('/auth/login', { method: 'POST', body: payload, auth: false, guestCart: true }),
   logout: (refreshToken) => request('/auth/logout', { method: 'POST', body: { refreshToken }, auth: false }),
 
-  // Catalog
+
   listCategories: () => request('/categories', { auth: false }),
   listProducts: (params = {}) => {
     const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))
@@ -120,7 +113,7 @@ export const api = {
   listReviews: (productId) => request(`/products/${productId}/reviews`, { auth: false }),
   addReview: (productId, payload) => request(`/products/${productId}/reviews`, { method: 'POST', body: payload }),
 
-  // Cart (works for guest + logged-in)
+
   getCart: () => request('/cart', { auth: true, guestCart: true }),
   addToCart: (payload) => request('/cart/items', { method: 'POST', body: payload, guestCart: true }),
   updateCartItem: (itemId, payload) => request(`/cart/items/${itemId}`, { method: 'PATCH', body: payload, guestCart: true }),
@@ -128,7 +121,7 @@ export const api = {
   applyCoupon: (code) => request('/cart/coupon', { method: 'POST', body: { code }, guestCart: true }),
   removeCoupon: () => request('/cart/coupon', { method: 'DELETE', guestCart: true }),
 
-  // Profile / addresses
+
   getProfile: () => request('/me'),
   updateProfile: (payload) => request('/me', { method: 'PATCH', body: payload }),
   listAddresses: () => request('/me/addresses'),
@@ -136,21 +129,21 @@ export const api = {
   updateAddress: (id, payload) => request(`/me/addresses/${id}`, { method: 'PATCH', body: payload }),
   deleteAddress: (id) => request(`/me/addresses/${id}`, { method: 'DELETE' }),
 
-  // Wishlist
+
   getWishlist: () => request('/me/wishlist'),
   addToWishlist: (productId) => request(`/me/wishlist/${productId}`, { method: 'PUT' }),
   removeFromWishlist: (productId) => request(`/me/wishlist/${productId}`, { method: 'DELETE' }),
 
-  // Orders / checkout
+
   checkout: (shippingAddressId) => request('/orders/checkout', { method: 'POST', body: { shippingAddressId } }),
   listOrders: () => request('/orders'),
   getOrder: (id) => request(`/orders/${id}`),
   cancelOrder: (id) => request(`/orders/${id}/cancel`, { method: 'POST' }),
 
-  // Payment
+
   verifyPayment: (payload) => request('/payments/verify', { method: 'POST', body: payload }),
 
-  // Admin
+
   adminCreateProduct: (payload) => request('/admin/products', { method: 'POST', body: payload }),
   adminUpdateProduct: (id, payload) => request(`/admin/products/${id}`, { method: 'PUT', body: payload }),
   adminArchiveProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
