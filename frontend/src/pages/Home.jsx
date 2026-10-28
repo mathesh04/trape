@@ -18,6 +18,13 @@ export default function Home() {
 
   return (
     <div>
+      {/* Hero section */}
+      <section className="hero">
+        <h1>Trendy Fashion, Unbeatable Prices</h1>
+        <p>Shop the latest styles for women, men &amp; kids — new drops every week.</p>
+        <Link to="/products" className="btn">Shop Now</Link>
+      </section>
+
       {/* New arrivals section */}
       <h2 className="section-title">New arrivals</h2>
       <p className="section-subtitle">Fresh picks handpicked for you</p>
@@ -32,31 +39,6 @@ export default function Home() {
           {products.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       )}
-
-      {/* Shop by category section */}
-      <div className="container">
-        {categories.length > 0 && (
-          <>
-            <h2 className="section-title">Shop by category</h2>
-            <p className="section-subtitle">Curated collections, refreshed daily</p>
-            <div className="category-tiles">
-              {categories.map((c, i) => (
-                <Link key={c.id} to={`/products?category=${c.slug}`} className="category-tile">
-                  <div className="category-tile-icon">{c.name.charAt(0)}</div>
-                  {c.name}
-                </Link>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Hero section */}
-      <section className="hero">
-        <h1>Trendy Fashion, Unbeatable Prices</h1>
-        <p>Shop the latest styles for women, men &amp; kids — new drops every week.</p>
-        <Link to="/products" className="btn">Shop Now</Link>
-      </section>
     </div>
   )
 }
