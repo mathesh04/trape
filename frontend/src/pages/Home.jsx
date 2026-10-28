@@ -26,19 +26,21 @@ export default function Home() {
       </section>
 
       {/* New arrivals section */}
-      <h2 className="section-title">New arrivals</h2>
-      <p className="section-subtitle">Fresh picks handpicked for you</p>
-      {loading ? (
-        <div className="spinner-wrap">Loading…</div>
-      ) : products.length === 0 ? (
-        <div className="empty-state">
-          <p>No products yet — check back soon, or head to the admin panel to add your first item.</p>
-        </div>
-      ) : (
-        <div className="product-grid">
-          {products.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
-      )}
+      <div className="container" style={{margin: "0 24px"}}>
+        <h2 className="section-title">New arrivals</h2>
+        <p className="section-subtitle">Fresh picks handpicked for you</p>
+        {loading ? (
+          <div className="spinner-wrap">Loading…</div>
+        ) : products.length === 0 ? (
+          <div className="empty-state">
+            <p>No products yet — check back soon, or head to the admin panel to add your first item.</p>
+          </div>
+        ) : (
+          <div className="product-grid">
+            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
